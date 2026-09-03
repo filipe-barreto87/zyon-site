@@ -160,21 +160,34 @@ section { position: relative; }
   gap: clamp(2rem, 5vw, 5rem); align-items: center;
   max-width: 1280px; margin: 0 auto; width: 100%;
 }
-.hero-h1 { font-size: clamp(2.5rem, 1.4rem + 5.4vw, 5.6rem); margin: 1.4rem 0 1.2rem; }
+.hero-h1 { font-size: clamp(2.3rem, 1.2rem + 4.2vw, 4.4rem); margin: 1.2rem 0 1.1rem; }
 .hero-h1 em { color: var(--ambar-2); }
-.hero-sub { color: var(--txt-claro-2); max-width: 34rem; }
+.hero-sub { color: var(--txt-claro-2); max-width: 32rem; font-size: 0.97rem; }
 .hero-ctas { display: flex; gap: 0.9rem; flex-wrap: wrap; margin-top: 1.8rem; }
-/* slogan do hero — tratamento de assinatura de campanha, não de rótulo técnico */
+/* slogan do hero — a frase encena o serviço: o arquivo "morto" é riscado
+   e o que renasce ganha a escala. Contraste de tamanho conta a história. */
 .hero-slogan {
-  margin-top: 2.1rem;
+  margin-top: clamp(1.6rem, 3.2vh, 2.6rem);
   font-family: var(--serif); font-optical-sizing: auto;
-  font-size: clamp(1.15rem, 0.85rem + 1vw, 1.65rem);
-  font-weight: 460; line-height: 1.2; letter-spacing: -0.01em;
-  color: var(--txt-claro);
-  display: flex; align-items: center; gap: 0.95rem;
+  font-size: clamp(1.05rem, 0.85rem + 0.7vw, 1.35rem);
+  font-weight: 450; line-height: 1.15; letter-spacing: -0.01em;
+  color: var(--txt-claro-2);
 }
-.hero-slogan em { color: var(--ambar-2); font-style: italic; font-weight: 580; }
-.hero-slogan .selo-traco { width: 2.6rem; background: var(--ambar); height: 2px; }
+.hero-slogan .risca { position: relative; white-space: nowrap; }
+.hero-slogan .risca::after {              /* o traço que encerra o arquivo morto */
+  content: ""; position: absolute; left: -3%; right: -3%; top: 54%;
+  height: 2px; background: var(--ambar); border-radius: 2px;
+  transform: scaleX(0); transform-origin: left center;
+  transition: transform 0.6s var(--ease-out) 0.4s;
+}
+.hero-slogan.in .risca::after { transform: scaleX(1); }
+.hero-slogan em {                          /* e o que volta a viver */
+  display: block; margin-top: 0.15em;
+  font-size: clamp(1.9rem, 1.1rem + 2.6vw, 3.1rem);
+  font-style: italic; font-weight: 560; line-height: 1;
+  color: var(--ambar-2);
+}
+.rm .hero-slogan .risca::after { transform: scaleX(1); transition: none; }
 .selo-traco { width: 1.6rem; height: 1px; background: var(--linha-d); flex: none; }
 
 /* o documento sendo digitalizado */
