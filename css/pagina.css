@@ -78,3 +78,34 @@
   text-transform: uppercase; color: var(--txt-claro-2); text-decoration: none;
 }
 .doc-voltar:hover { color: var(--ambar-2); }
+
+/* ---------- artigos ---------- */
+.art-capa {
+  max-width: 52rem; margin: 0 auto 2.6rem; padding: 0 var(--pad);
+}
+.art-capa img {
+  width: 100%; height: auto; display: block; border-radius: 4px;
+  border: 1px solid var(--linha-d);
+}
+.art-lista { max-width: 52rem; margin: 0 auto; padding: 0 var(--pad) 4rem; }
+.art-item {
+  display: block; text-decoration: none; padding: 1.6rem 0;
+  border-top: 1px solid var(--linha-d);
+}
+.art-item:last-child { border-bottom: 1px solid var(--linha-d); }
+.art-item h2 {
+  font-family: var(--display); font-weight: 480; font-size: 1.45rem;
+  line-height: 1.2; color: var(--txt-claro); margin: 0.35rem 0 0.5rem;
+  transition: color 0.25s;
+}
+.art-item:hover h2 { color: var(--ambar-2); }
+.art-item p { color: var(--txt-claro-2); font-size: 0.95rem; line-height: 1.6; margin: 0; }
+.art-data {
+  font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--ambar-2);
+}
+.art-fim {
+  max-width: 52rem; margin: 3rem auto 0; padding: 2rem var(--pad) 0;
+  border-top: 1px solid var(--linha-d);
+}
+.art-fim p { color: var(--txt-claro-2); margin: 0 0 1.2rem; }

@@ -1,0 +1,70 @@
+# Zyon Tecnologia — site estático. Servidor Apache da hospedagem atual.
+
+# ---------- canonicalização: sempre HTTPS, sempre sem www ----------
+RewriteEngine On
+# Em hospedagem compartilhada o TLS costuma terminar num proxy e %{HTTPS} chega
+# vazio — testar só ele faria a regra redirigir para si mesma em loop infinito.
+# Por isso a condição exige que NENHUM dos três sinais de HTTPS esteja presente.
+RewriteCond %{HTTPS} !=on
+RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+RewriteCond %{HTTP:X-Forwarded-SSL} !=on
+RewriteRule ^(.*)$ https://zyontecnologia.com.br/$1 [R=301,L]
+RewriteCond %{HTTP_HOST} ^www\.zyontecnologia\.com\.br$ [NC]
+RewriteRule ^(.*)$ https://zyontecnologia.com.br/$1 [R=301,L]
+
+# ---------- URLs do site WordPress anterior ----------
+# O slug do post trazia um emoji (…-%f0%9f%9a%80). O padrão abaixo casa qualquer
+# sufixo depois do slug limpo, então não depende de como o Apache decodifica o %XX.
+RedirectMatch 301 "^/evolucao-e-inovacao-nossa-jornada-rumo-a-gestao-documental-.+$" "/evolucao-e-inovacao-nossa-jornada-rumo-a-gestao-documental/"
+
+# páginas padrão do WordPress que nunca foram conteúdo
+RedirectMatch 301 "^/hello-world/?$"  "/"
+RedirectMatch 301 "^/sample-page/?$"  "/"
+
+# a antiga política de cookies virou a política de privacidade
+RedirectMatch 301 "^/politica-de-cookies/?$" "/politica-de-privacidade.html"
+
+# restos do WordPress: não deixar 404 nem expor que existiu um WP aqui
+RedirectMatch 301 "^/(wp-admin|wp-login\.php|xmlrpc\.php|wp-json)(/.*)?$" "/"
+RedirectMatch 404 "^/wp-(content|includes)/.*$"
+
+ErrorDocument 404 /404.html
+
+# ---------- compressão ----------
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml
+  AddOutputFilterByType DEFLATE application/javascript application/json image/svg+xml
+</IfModule>
+
+# ---------- cache ----------
+<IfModule mod_expires.c>
+  ExpiresActive On
+  # HTML muda a cada publicação: revalidar sempre
+  ExpiresByType text/html "access plus 0 seconds"
+  # CSS/JS carregam ?v= na URL, então podem durar
+  ExpiresByType text/css                "access plus 1 year"
+  ExpiresByType application/javascript  "access plus 1 year"
+  ExpiresByType font/woff2              "access plus 1 year"
+  ExpiresByType image/jpeg              "access plus 6 months"
+  ExpiresByType image/webp              "access plus 6 months"
+  ExpiresByType image/svg+xml           "access plus 6 months"
+</IfModule>
+<IfModule mod_headers.c>
+  <FilesMatch "\.(woff2|css|js|svg|jpe?g|webp|png)$">
+    Header set Cache-Control "public, max-age=31536000"
+  </FilesMatch>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "public, max-age=0, must-revalidate"
+  </FilesMatch>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set X-Frame-Options "SAMEORIGIN"
+</IfModule>
+
+<IfModule mod_mime.c>
+  AddType font/woff2 .woff2
+  AddType image/webp .webp
+</IfModule>
+
+DirectoryIndex index.html
+Options -Indexes

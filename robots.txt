@@ -1,4 +1,4 @@
-# HOMOLOGAÇÃO — não indexar.
-# AO PROMOVER PARA PRODUÇÃO: substituir por "User-agent: *\nAllow: /" + Sitemap.
 User-agent: *
-Disallow: /
+Allow: /
+
+Sitemap: https://zyontecnologia.com.br/sitemap.xml
