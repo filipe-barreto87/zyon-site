@@ -111,6 +111,8 @@ section { position: relative; }
     }
   }
 }
+/* âncoras não pousam atrás do cabeçalho fixo — vale em todos os tamanhos */
+html { scroll-padding-top: calc(var(--h-header) + 12px); }
 .marca { text-decoration: none; display: flex; align-items: center; }
 .marca-assinatura { height: 52px; width: auto; display: block; }   /* assinatura completa em curvas */
 .marca-curta { height: 34px; width: auto; display: none; }          /* símbolo + nome, no mobile */
@@ -750,7 +752,6 @@ section { position: relative; }
   .topo .cta-mini { position: relative; flex: none; }
   .topo .cta-mini::after { content: ""; position: absolute; inset: -5px; }
 
-  html { scroll-padding-top: calc(var(--h-header) + 12px); }
 }
 
 /* o caminho scroll-driven (sem JS) precisa da placa nova: animação vence
