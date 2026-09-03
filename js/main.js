@@ -14,6 +14,13 @@
     scrollTo({ top: +qs.get("scroll"), behavior: "instant" }));
   if (qs.has("vh")) document.documentElement.style.setProperty("--vhpx", `${+qs.get("vh")}px`); // QA: svh fixo
   if (qs.has("shift")) document.body.style.marginTop = `-${+qs.get("shift")}px`; // QA headless: viewport deslocada
+  if (qs.has("probe6")) addEventListener("load", () => setTimeout(() => {
+    const s = document.querySelector(".marca-simbolo").getBoundingClientRect();
+    const d = document.querySelector(".marca-desc");
+    const dr = d.getBoundingClientRect();
+    const cs = getComputedStyle(d);
+    document.title = `PROBE6 simbolo=${Math.round(s.width)}x${Math.round(s.height)} descritorVisivel=${dr.width>0} fonte=${cs.fontSize} tracking=${cs.letterSpacing} larguraDescritor=${Math.round(dr.width)} texto="${d.textContent.trim()}"`;
+  }, 600));
   if (qs.has("probe5")) addEventListener("load", () => setTimeout(() => {
     const r = document.querySelector(".hero-h1 .risca");
     const h1 = document.querySelector(".hero-h1");
