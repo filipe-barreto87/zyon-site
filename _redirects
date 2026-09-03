@@ -1,0 +1,3 @@
+# Netlify / Cloudflare Pages — redirects 301 reais (ignorado pelo GitHub Pages)
+/politica-de-cookies/*  /politica-de-privacidade.html  301
+/politica-de-cookies    /politica-de-privacidade.html  301

@@ -1,0 +1,80 @@
+/* ============================================================
+   PÁGINAS DE TEXTO (política de privacidade, etc.)
+   Herda os tokens de css/style.css — só o que é específico aqui.
+   ============================================================ */
+.doc-topo {
+  border-bottom: 1px solid var(--linha-d);
+  padding: 6.5rem var(--pad) 2.6rem;
+}
+.doc-topo .doc-in { max-width: 52rem; margin: 0 auto; }
+.doc-topo h1 {
+  font-size: clamp(2.1rem, 1.4rem + 3vw, 3.4rem);
+  margin: 1rem 0 0.9rem;
+}
+.doc-topo .resumo {
+  color: var(--txt-claro-2); max-width: 46rem; font-size: 1.05rem;
+}
+.doc-meta {
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--txt-claro-2);
+  margin-top: 1.4rem; display: flex; gap: 1.4rem; flex-wrap: wrap;
+}
+
+.doc-corpo { max-width: 52rem; margin: 0 auto; padding: 3rem var(--pad) 4rem; }
+.doc-corpo h2 {
+  font-size: clamp(1.3rem, 1.1rem + 1vw, 1.75rem);
+  margin: 2.8rem 0 0.9rem; scroll-margin-top: 5rem;
+}
+.doc-corpo h2:first-of-type { margin-top: 0; }
+.doc-corpo h3 {
+  font-family: var(--sans); font-weight: 650; font-size: 1.02rem;
+  margin: 1.6rem 0 0.5rem; color: var(--txt-claro);
+}
+.doc-corpo p, .doc-corpo li { color: var(--txt-claro-2); }
+.doc-corpo p + p { margin-top: 0.9rem; }
+.doc-corpo strong { color: var(--txt-claro); font-weight: 620; }
+.doc-corpo a { color: var(--ambar-2); text-decoration: underline; text-underline-offset: 3px; }
+.doc-corpo a:hover { color: var(--ambar); }
+.doc-corpo ul, .doc-corpo ol { margin: 0.8rem 0 0.8rem 1.2rem; display: grid; gap: 0.5rem; }
+.doc-corpo li::marker { color: var(--ambar); }
+
+/* destaque para a afirmação central */
+.doc-nota {
+  border-left: 3px solid var(--ambar);
+  background: rgba(228, 93, 22, 0.07);
+  padding: 1.1rem 1.3rem; border-radius: 0 6px 6px 0;
+  margin: 1.6rem 0; font-size: 0.97rem;
+}
+.doc-nota strong { color: var(--ambar-2); }
+
+/* tabela de terceiros */
+.doc-tabela { overflow-x: auto; margin: 1.4rem 0; border: 1px solid var(--linha-d); border-radius: 8px; }
+.doc-tabela table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 0.92rem; }
+.doc-tabela th {
+  font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--ambar-2); text-align: left;
+  padding: 0.8rem 1rem; border-bottom: 1px solid var(--linha-d); background: var(--breu);
+}
+.doc-tabela td { padding: 0.85rem 1rem; border-bottom: 1px solid var(--linha-d); vertical-align: top; color: var(--txt-claro-2); }
+.doc-tabela tr:last-child td { border-bottom: none; }
+.doc-tabela td:first-child { color: var(--txt-claro); font-weight: 600; }
+
+/* índice lateral rápido */
+.doc-indice {
+  border: 1px solid var(--linha-d); border-radius: 8px;
+  padding: 1.2rem 1.4rem; margin-bottom: 2.6rem; background: var(--breu);
+}
+.doc-indice p {
+  font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--ambar); margin-bottom: 0.7rem;
+}
+.doc-indice ol { margin: 0; list-style: none; display: grid; gap: 0.35rem; }
+.doc-indice a { color: var(--txt-claro-2); text-decoration: none; font-size: 0.9rem; }
+.doc-indice a:hover { color: var(--ambar-2); }
+
+.doc-voltar {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--txt-claro-2); text-decoration: none;
+}
+.doc-voltar:hover { color: var(--ambar-2); }

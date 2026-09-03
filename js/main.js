@@ -64,11 +64,16 @@
   /* ---------- facade YouTube ---------- */
   document.querySelectorAll(".yt").forEach(btn => {
     btn.addEventListener("click", () => {
+      // o clique é o consentimento (avisado no figcaption ao lado)
       const f = document.createElement("iframe");
       f.src = `https://www.youtube-nocookie.com/embed/${btn.dataset.id}?autoplay=1&rel=0`;
       f.allow = "autoplay; encrypted-media; picture-in-picture";
       f.allowFullscreen = true;
-      btn.replaceChildren(f);
+      f.title = btn.getAttribute("aria-label") || "Vídeo";
+      f.className = "yt-frame";
+      btn.replaceWith(f);                       // substitui o botão — iframe nunca dentro de <button>
+      const aviso = f.parentElement?.querySelector(".yt-aviso");
+      if (aviso) aviso.textContent = "Vídeo carregado do YouTube (Google).";
     }, { once: true });
   });
 
