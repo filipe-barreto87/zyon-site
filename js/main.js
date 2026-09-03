@@ -14,6 +14,12 @@
     scrollTo({ top: +qs.get("scroll"), behavior: "instant" }));
   if (qs.has("vh")) document.documentElement.style.setProperty("--vhpx", `${+qs.get("vh")}px`); // QA: svh fixo
   if (qs.has("shift")) document.body.style.marginTop = `-${+qs.get("shift")}px`; // QA headless: viewport deslocada
+  if (qs.has("probe2")) addEventListener("load", () => setTimeout(() => {
+    const c = document.querySelector(".ciclo");
+    const ativa = [...document.querySelectorAll("#cicloRail li")].findIndex(li => li.classList.contains("on"));
+    const r = c.getBoundingClientRect();
+    document.title = `PROBE2 topoCiclo=${Math.round(r.top+scrollY)} scrollY=${Math.round(scrollY)} visivel=${r.top < innerHeight && r.bottom > 0} etapaAtiva=${ativa+1} rotulo="${document.getElementById("cicloProt").textContent}"`;
+  }, +(qs.get("probe2")||0)));
   if (qs.has("probe")) addEventListener("load", () => {   // QA: medição legível via --dump-dom
     const de = document.documentElement;
     const h1 = document.querySelector(".hero-h1").getBoundingClientRect();
@@ -111,38 +117,109 @@
     });
   }
 
-  /* ---------- cena 1: o scanner ---------- */
+  /* ---------- cena 1: o scanner (scroll + demonstração automática) ---------- */
   const doc = document.getElementById("doc");
   const chips = [...document.querySelectorAll(".chip")];
-  registrar(document.querySelector(".hero"), (p, estatico) => {
+  let demoP = null;                      // quando != null, sobrepõe o scroll
+
+  const pintarHero = (p, estatico) => {
     if (doc) {
-      const scan = 8 + p * 84;
-      doc.style.setProperty("--scan", `${scan}%`);
-      doc.querySelector(".doc-beam").style.opacity = (p > 0.02 && p < 0.98) ? 1 : 0;
+      doc.style.setProperty("--scan", `${8 + p * 84}%`);
+      const feixe = doc.querySelector(".doc-beam");
+      if (feixe) feixe.style.opacity = (p > 0.02 && p < 0.98) ? 1 : 0;
     }
     for (const c of chips) c.classList.toggle("on", p >= +c.dataset.at);
     if (estatico) chips.forEach(c => c.classList.add("on"));
-  });
+  };
+  registrar(document.querySelector(".hero"), (p, estatico) => pintarHero(demoP !== null ? demoP : p, estatico));
 
-  /* ---------- cena 2: o ciclo ---------- */
+  // demonstração: varre o documento sozinho e volta ao início, liberando o scroll.
+  // Cancela ao primeiro gesto do usuário — quem rola manda.
+  if (!rm && doc) {
+    let demoViva = false;
+    const cancelar = () => { demoViva = false; demoP = null; };
+    ["wheel", "touchstart", "keydown", "pointerdown"].forEach(ev =>
+      addEventListener(ev, cancelar, { passive: true, once: true }));
+    addEventListener("scroll", () => { if (scrollY > 12) cancelar(); }, { passive: true });
+
+    setTimeout(() => {
+      if (scrollY > 12) return;
+      demoViva = true;
+      const t0 = performance.now(), IDA = 2400, ESPERA = 900, VOLTA = 800;
+      const suave = (k) => k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+      const quadro = (t) => {
+        if (!demoViva) return;
+        const dt = t - t0;
+        if (dt < IDA) demoP = 0.92 * suave(dt / IDA);
+        else if (dt < IDA + ESPERA) demoP = 0.92;
+        else if (dt < IDA + ESPERA + VOLTA) demoP = 0.92 * (1 - suave((dt - IDA - ESPERA) / VOLTA));
+        else return cancelar();          // volta a 0 = estado do scroll, sem salto
+        requestAnimationFrame(quadro);
+      };
+      requestAnimationFrame(quadro);
+    }, 900);
+  }
+
+  /* ---------- cena 2: o ciclo — AUTOPLAY (não depende mais de scroll) ---------- */
   const rail = document.getElementById("cicloRail");
   const teatro = document.getElementById("cicloTeatro");
   const prot = document.getElementById("cicloProt");
   const barra = document.getElementById("cicloBarra");
   const itens = rail ? [...rail.children] : [];
   const icones = teatro ? [...teatro.children] : [];
-  registrar(document.querySelector(".ciclo"), (p, estatico) => {
-    if (estatico) {
+  const secaoCiclo = document.querySelector(".ciclo");
+
+  if (itens.length && secaoCiclo) {
+    const TOTAL = itens.length, DUR = 3200;
+    let atual = -1, timer = null, tocado = false;
+
+    const mostrar = (i, animarBarra = true) => {
+      atual = i;
+      itens.forEach((li, k) => li.classList.toggle("on", k === i));
+      icones.forEach((ic, k) => ic.classList.toggle("on", k === i));
+      if (prot) prot.textContent = `ETAPA ${String(i + 1).padStart(2, "0")} DE ${String(TOTAL).padStart(2, "0")}`;
+      if (barra) {
+        barra.style.transition = "none";
+        barra.style.width = `${(i / TOTAL) * 100}%`;
+        void barra.offsetWidth;                       // reflow: garante o ponto de partida
+        if (animarBarra) {
+          barra.style.transition = `width ${DUR}ms linear`;
+          barra.style.width = `${((i + 1) / TOTAL) * 100}%`;
+        }
+      }
+    };
+
+    const parar = () => { clearInterval(timer); timer = null; };
+    const tocar = () => {
+      if (timer || rm) return;
+      if (atual < 0) mostrar(0);
+      timer = setInterval(() => mostrar((atual + 1) % TOTAL), DUR);
+    };
+
+    // roda só enquanto a seção está à vista (não gasta CPU nem "passa" escondido)
+    new IntersectionObserver((es) => {
+      es.forEach(e => e.isIntersecting ? tocar() : parar());
+    }, { threshold: 0.3 }).observe(secaoCiclo);
+
+    // cada etapa é clicável: vai direto e o ciclo segue dali
+    itens.forEach((li, k) => {
+      li.setAttribute("role", "button");
+      li.setAttribute("tabindex", "0");
+      li.setAttribute("aria-label", `Ver etapa ${k + 1} de ${TOTAL}`);
+      const ir = () => { tocado = true; parar(); mostrar(k); tocar(); };
+      li.addEventListener("click", ir);
+      li.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); ir(); }
+      });
+    });
+
+    if (rm) {                                          // reduced-motion: tudo visível, sem timer
       itens.forEach(li => li.classList.add("on"));
-      if (prot) prot.textContent = "CICLO ▸ 06 ETAPAS";
-      return;
+      icones.forEach((ic, k) => ic.classList.toggle("on", k === 0));
+      if (prot) prot.textContent = `CICLO ▸ ${TOTAL} ETAPAS`;
+      if (barra) barra.style.width = "100%";
     }
-    const i = Math.min(5, Math.floor(p * 6));
-    itens.forEach((li, k) => li.classList.toggle("on", k === i));
-    icones.forEach((ic, k) => ic.classList.toggle("on", k === i));
-    if (prot) prot.textContent = `CICLO ▸ ${String(Math.round(p * 100)).padStart(3, "0")}%`;
-    if (barra) barra.style.width = `${p * 100}%`;
-  });
+  }
 
   /* ---------- tilt de ponteiro no documento (fino + sem rm) ---------- */
   if (!rm && matchMedia("(hover: hover) and (pointer: fine)").matches && doc) {

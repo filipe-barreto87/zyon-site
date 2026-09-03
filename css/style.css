@@ -368,13 +368,23 @@ section { position: relative; }
    ATO 2 · O CICLO — jornada pinada
    ============================================================ */
 .ciclo { background: var(--tinta); }
-.ciclo-screen { padding: 5.5rem var(--pad) 2.5rem; max-width: 1280px; margin: 0 auto; width: 100%; }
+.ciclo-screen {
+    padding: clamp(3.2rem, 8vh, 5.5rem) var(--pad) clamp(2.2rem, 5vh, 3.2rem);
+    max-width: 1280px; margin: 0 auto; width: 100%;
+    display: flex; flex-direction: column;
+  }
 .ciclo-cab { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
 .ciclo-prot { font-size: 0.75rem; letter-spacing: 0.18em; color: var(--ambar-2); }
 .ciclo-h { margin: 1rem 0 clamp(1.5rem, 4vh, 3rem); max-width: 16ch; }
-.ciclo-corpo { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr); gap: clamp(2rem, 5vw, 5rem); flex: 1; min-height: 0; align-items: start; }
+.ciclo-corpo { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr); gap: clamp(2rem, 5vw, 5rem); min-height: 400px; align-items: start; }
 .ciclo-rail { list-style: none; }
-.ciclo-rail li { padding: 0.9rem 0; border-bottom: 1px solid var(--linha-d); transition: opacity 0.4s; opacity: 0.32; }
+.ciclo-rail li {
+    padding: 0.9rem 0; border-bottom: 1px solid var(--linha-d);
+    transition: opacity 0.4s, background 0.3s; opacity: 0.32;
+    cursor: pointer; border-radius: 4px;
+  }
+  .ciclo-rail li:hover { opacity: 0.7; }
+  .ciclo-rail li:focus-visible { outline: 2px solid var(--ambar); outline-offset: 3px; opacity: 0.9; }
 .ciclo-rail li.on { opacity: 1; }
 .ciclo-rail h3 { font-size: clamp(1.1rem, 2vw, 1.55rem); display: flex; gap: 0.9rem; align-items: baseline; }
 .ciclo-rail h3 span { font-family: var(--mono); font-size: 0.7rem; color: var(--ambar-2); }
@@ -401,8 +411,8 @@ section { position: relative; }
 .rm .ciclo-teatro { display: none; }
 .rm .ciclo-corpo { grid-template-columns: 1fr; }
 .ciclo-barra { height: 2px; background: var(--linha-d); margin-top: 1.6rem; }
-.ciclo-barra i { display: block; height: 100%; width: 0; background: var(--ambar); transition: width 0.15s linear; }
-.rm .ciclo-barra { display: none; }
+.ciclo-barra i { display: block; height: 100%; width: 0; background: var(--ambar); }
+.rm .ciclo-barra i { width: 100% !important; transition: none !important; }
 
 /* ============================================================
    ATO 3 · AMPARO LEGAL — carimbos
@@ -559,13 +569,13 @@ section { position: relative; }
   .doc { height: min(66vw, 30svh); width: auto; }
   .hero-hint { display: none; }
 }
-@media (max-width: 960px) and (max-height: 700px) {
-  .doc { height: min(60vw, 26svh); }
+/* layout mobile — depende da LARGURA (valia só em telas baixas por engano) */
+@media (max-width: 960px) {
   .sol, .sol-inv { grid-template-columns: 1fr; gap: 2rem; }
   .sol-inv .sol-txt { order: 1; }
   .sol-inv .sol-visual { order: 2; }
   .ged-duplo { grid-template-columns: 1fr; }
-  .ciclo-corpo { grid-template-columns: 1fr; }
+  .ciclo-corpo { grid-template-columns: 1fr; min-height: 0; }
   .ciclo-teatro { display: none; }
   .video-grid { grid-template-columns: 1fr; }
   .fim-trio { grid-template-columns: 1fr; }
@@ -574,6 +584,10 @@ section { position: relative; }
   .depo-inv blockquote { margin-left: 0; }
   .depo-inv blockquote::before { margin-left: 0; }
   .selo-circular { right: -2%; }
+}
+/* só o que realmente depende da ALTURA (celular deitado) */
+@media (max-width: 960px) and (max-height: 700px) {
+  .doc { height: min(60vw, 26svh); }
 }
 @media (max-width: 480px) {
   .cta-mini { padding: 0.5rem 0.8rem; font-size: 0.72rem; }
