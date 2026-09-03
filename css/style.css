@@ -78,13 +78,10 @@ section { position: relative; }
   transform-origin: 0 50%;
   transform: scaleX(0);
 }
-@supports (animation-timeline: scroll()) {
-  .progresso { animation: crescer linear both; animation-timeline: scroll(root); }
-  @keyframes crescer { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-}
+/* a barra de progresso é dirigida por rAF no main.js (mais previsível que scroll-driven) */
 
 /* ---------- header ---------- */
-.topo {
+.topo { --marca-caixa: #F5EEE1;
   position: fixed; top: 0; left: 0; right: 0; z-index: 50;
   display: flex; align-items: center; gap: 2rem;
   padding: 0.9rem var(--pad);
@@ -92,9 +89,28 @@ section { position: relative; }
   transition: background 0.4s var(--ease-out), border-color 0.4s;
 }
 .topo.rolou { background: rgba(13, 19, 33, 0.84); backdrop-filter: blur(12px); border-color: var(--linha-d); }
-.marca { text-decoration: none; display: flex; align-items: baseline; gap: 0.45rem; }
-.marca-z { font-family: var(--serif); font-weight: 620; font-size: 1.5rem; letter-spacing: -0.02em; }
-.marca-tech { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.3em; color: var(--ambar-2); }
+/* fundo do header sem depender de evento de scroll (a marca clara precisa de contraste
+   sobre as seções claras). CSS scroll-driven onde houver suporte; o JS cobre o resto. */
+@supports (animation-timeline: scroll()) {
+  .topo {
+    animation: header-fundo linear both;
+    animation-timeline: scroll(root);
+    animation-range: 40px 160px;
+  }
+  @keyframes header-fundo {
+    to {
+      background: rgba(13, 19, 33, 0.88);
+      border-color: var(--linha-d);
+      backdrop-filter: blur(12px);
+    }
+  }
+}
+.marca { text-decoration: none; display: flex; align-items: center; gap: 0.55rem; }
+.marca-simbolo { width: 30px; height: 30px; flex: none; display: block; }
+.marca-nome {
+  font-family: var(--sans); font-weight: 800; font-stretch: 105%;
+  font-size: 1.32rem; letter-spacing: -0.015em; line-height: 1; color: var(--txt-claro);
+}
 .nav { display: flex; gap: 1.6rem; margin-left: auto; }
 .nav a {
   text-decoration: none; font-size: 0.85rem; color: var(--txt-claro-2);
@@ -334,6 +350,17 @@ section { position: relative; }
 
 /* visuais das soluções (CSS puro) */
 .sol-visual { display: grid; place-items: center; min-height: 260px; }
+.sol-foto { margin: 0; position: relative; border-radius: 10px; overflow: hidden; box-shadow: 0 24px 60px rgba(4, 8, 18, 0.4); }
+.sol-foto img { width: 100%; height: auto; display: block; }
+.sol-foto-selo {
+  position: absolute; left: 0.9rem; bottom: 0.9rem;
+  background: rgba(13, 19, 33, 0.86); color: var(--papel);
+  font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 0.45rem 0.75rem; border-radius: 4px; backdrop-filter: blur(6px);
+  border-left: 2px solid var(--ambar);
+}
+.ged-foto { margin: 1.7rem 0 0; max-width: 100%; }
+.ged-foto img { max-height: 300px; object-fit: cover; object-position: center 60%; }
 .sol-visual-scan { grid-template-columns: auto auto auto; gap: 1.2rem; }
 .sv-folha, .sv-tela {
   width: 110px; aspect-ratio: 3/4; border-radius: 3px; padding: 16% 12%;
@@ -604,7 +631,7 @@ section { position: relative; }
 }
 @media (max-width: 480px) {
   .cta-mini { padding: 0.5rem 0.8rem; font-size: 0.72rem; }
-  .marca-tech { display: none; }
+  .marca-simbolo { width: 26px; height: 26px; }
   .chip { font-size: 0.55rem; }
   .hero-h1 br { display: none; }
 }

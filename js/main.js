@@ -14,6 +14,11 @@
     scrollTo({ top: +qs.get("scroll"), behavior: "instant" }));
   if (qs.has("vh")) document.documentElement.style.setProperty("--vhpx", `${+qs.get("vh")}px`); // QA: svh fixo
   if (qs.has("shift")) document.body.style.marginTop = `-${+qs.get("shift")}px`; // QA headless: viewport deslocada
+  if (qs.has("probe4")) addEventListener("load", () => setTimeout(() => {
+    const h = document.getElementById("header");
+    const b = document.querySelector(".progresso");
+    document.title = `PROBE4 scrollY=${Math.round(scrollY)} rolou=${h.classList.contains("rolou")} fundo=${getComputedStyle(h).backgroundColor.replace(/\s/g,"")} barra=${getComputedStyle(b).transform}`;
+  }, 800));
   if (qs.has("probe2")) addEventListener("load", () => setTimeout(() => {
     const c = document.querySelector(".ciclo");
     const ativa = [...document.querySelectorAll("#cicloRail li")].findIndex(li => li.classList.contains("on"));
@@ -27,11 +32,34 @@
     document.title = `PROBE iw=${innerWidth} cw=${de.clientWidth} sw=${de.scrollWidth} h1r=${Math.round(h1.right)} subr=${Math.round(sub.right)} fs=${getComputedStyle(document.querySelector(".hero-h1")).fontSize}`;
   });
 
-  /* ---------- header ---------- */
+  /* ---------- header + barra de progresso ----------
+     Nada aqui depende do evento "scroll": um sentinela no topo resolve o header
+     (IntersectionObserver dispara mesmo em rolagem programática) e a barra é
+     atualizada por rAF. O CSS scroll-driven, quando o navegador o aplica, apenas
+     reforça o mesmo resultado. */
   const header = document.getElementById("header");
-  addEventListener("scroll", () => {
-    header.classList.toggle("rolou", scrollY > 40);
-  }, { passive: true });
+  const sentinela = document.createElement("div");
+  sentinela.setAttribute("aria-hidden", "true");
+  sentinela.style.cssText = "position:absolute;top:0;left:0;width:1px;height:60px;pointer-events:none";
+  document.body.prepend(sentinela);
+  new IntersectionObserver(([e]) => {
+    header.classList.toggle("rolou", !e.isIntersecting);
+  }, { threshold: 0 }).observe(sentinela);
+
+  const barraProgresso = document.querySelector(".progresso");
+  if (barraProgresso && !rm) {
+    let ultimo = -1;
+    const atualizarBarra = () => {
+      const curso = document.documentElement.scrollHeight - innerHeight;
+      const p = curso > 0 ? Math.min(1, Math.max(0, scrollY / curso)) : 0;
+      if (Math.abs(p - ultimo) > 0.001) {
+        barraProgresso.style.transform = `scaleX(${p})`;
+        ultimo = p;
+      }
+      requestAnimationFrame(atualizarBarra);
+    };
+    requestAnimationFrame(atualizarBarra);
+  }
 
   /* ---------- reveals (IO) ---------- */
   const io = new IntersectionObserver((entries) => {
