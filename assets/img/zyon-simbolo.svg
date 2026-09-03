@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
+  <!-- Zyon — "Z-Arquivo": três lombadas de caixa formando o Z.
+       A diagonal âmbar é a caixa em movimento (retirada/entrega).
+       Furos de puxador vazados (mask) — mostram o fundo real. Grid 96, gap 4. -->
+  <defs>
+    <mask id="furos">
+      <rect width="96" height="96" fill="#fff"/>
+      <rect x="40" y="17.5" width="16" height="5" rx="2.5" fill="#000"/>
+      <rect x="40" y="45.5" width="16" height="5" rx="2.5" fill="#000" transform="rotate(-23 48 48)"/>
+      <rect x="40" y="73.5" width="16" height="5" rx="2.5" fill="#000"/>
+    </mask>
+  </defs>
+  <g mask="url(#furos)">
+    <rect x="6" y="8" width="84" height="24" rx="2" fill="#F5EEE1"/>
+    <path d="M62 36 H90 L34 60 H6 Z" fill="#E45D16"/>
+    <rect x="6" y="64" width="84" height="24" rx="2" fill="#F5EEE1"/>
+  </g>
+</svg>

@@ -105,18 +105,9 @@ section { position: relative; }
     }
   }
 }
-.marca { text-decoration: none; display: flex; align-items: center; gap: 0.6rem; }
-.marca-simbolo { width: 36px; height: 36px; flex: none; display: block; }
-.marca-txt { display: flex; flex-direction: column; gap: 0.3em; }
-.marca-nome {
-  font-family: var(--sans); font-weight: 800; font-stretch: 105%;
-  font-size: 1.28rem; letter-spacing: -0.015em; line-height: 1; color: var(--txt-claro);
-}
-.marca-desc {                       /* descritor da assinatura (manual: só com símbolo ≥32px) */
-  font-family: var(--mono); font-size: 0.5rem; font-weight: 500;
-  letter-spacing: 0.24em; text-transform: uppercase; line-height: 1;
-  color: var(--txt-claro-2); white-space: nowrap;
-}
+.marca { text-decoration: none; display: flex; align-items: center; }
+.marca-assinatura { height: 40px; width: auto; display: block; }   /* assinatura completa em curvas */
+.marca-simbolo { height: 32px; width: auto; display: none; }        /* só o símbolo, no mobile */
 .nav { display: flex; gap: 1.6rem; margin-left: auto; }
 .nav a {
   text-decoration: none; font-size: 0.85rem; color: var(--txt-claro-2);
@@ -616,10 +607,9 @@ section { position: relative; }
    ============================================================ */
 @media (max-width: 960px) {
   .nav { display: none; }
-  /* manual: abaixo de 32px de símbolo o descritor sai da assinatura */
-  .marca-simbolo { width: 28px; height: 28px; }
-  .marca-desc { display: none; }
-  .marca-nome { font-size: 1.15rem; }
+  /* manual: sem espaço para a assinatura completa, fica só o símbolo */
+  .marca-assinatura { display: none; }
+  .marca-simbolo { display: block; height: 30px; }
   .hero-grid { grid-template-columns: 1fr; gap: 1.25rem; }
   .hero-stage { order: 2; }
   .hero-screen { padding: 4.5rem var(--pad) 1.5rem; }
