@@ -166,23 +166,18 @@ section { position: relative; }
   gap: clamp(2rem, 5vw, 5rem); align-items: center;
   max-width: 1280px; margin: 0 auto; width: 100%;
 }
-.hero-h1 {
-  font-size: clamp(1.6rem, 1rem + 1.9vw, 2.6rem);   /* a 1ª linha é a menor: "arquivo morto" */
-  margin: 1.2rem 0 1.1rem; font-weight: 450;
-  color: var(--txt-claro-2); line-height: 1.12;
+.hero-h1 {                          /* mesma formatação do H1 original: duas linhas grandes */
+  font-size: clamp(2.5rem, 1.4rem + 5.4vw, 5.6rem);
+  margin: 1.4rem 0 1.2rem;
+  font-weight: 480; line-height: 1.05; letter-spacing: -0.01em;
+  color: var(--txt-claro);
 }
 .hero-h1 .risca { position: relative; white-space: nowrap; }
-.hero-h1 .risca::after {                 /* o traço que encerra o arquivo morto */
+.hero-h1 .risca::after {            /* o traço que encerra o arquivo morto */
   content: ""; position: absolute; left: -3%; right: -3%; top: 54%;
-  height: 3px; background: var(--ambar); border-radius: 2px;
+  height: 5px; background: var(--ambar); border-radius: 3px;
 }
-.hero-h1 em {                            /* e o que volta a viver domina o hero */
-  display: block; margin-top: 0.1em;
-  font-size: clamp(2.6rem, 1.3rem + 4.6vw, 5.2rem);
-  font-style: italic; font-weight: 560; line-height: 0.98;
-  color: var(--ambar-2); letter-spacing: -0.02em;
-}
-.hero-h1 em { color: var(--ambar-2); }
+.hero-h1 em { color: var(--ambar-2); font-style: italic; font-weight: 560; }
 .hero-sub { color: var(--txt-claro-2); max-width: 32rem; font-size: 0.97rem; }
 .hero-ctas { display: flex; gap: 0.9rem; flex-wrap: wrap; margin-top: 1.8rem; }
 .selo-traco { width: 1.6rem; height: 1px; background: var(--linha-d); flex: none; }
