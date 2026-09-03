@@ -14,6 +14,19 @@
     scrollTo({ top: +qs.get("scroll"), behavior: "instant" }));
   if (qs.has("vh")) document.documentElement.style.setProperty("--vhpx", `${+qs.get("vh")}px`); // QA: svh fixo
   if (qs.has("shift")) document.body.style.marginTop = `-${+qs.get("shift")}px`; // QA headless: viewport deslocada
+  if (qs.has("probe9")) addEventListener("load", () => setTimeout(() => {
+    const sc = document.querySelector(".hero-screen"), gr = document.querySelector(".hero-grid");
+    const cs = getComputedStyle(sc);
+    document.title = `PROBE9 telaAltura=${Math.round(sc.getBoundingClientRect().height)} conteudoAltura=${Math.round(gr.getBoundingClientRect().height)} paddingTop=${cs.paddingTop} justify=${cs.justifyContent} varHeader=${getComputedStyle(document.documentElement).getPropertyValue("--h-header")} gridTop=${Math.round(gr.getBoundingClientRect().top)}`;
+  }, 700));
+  if (qs.has("probe8")) addEventListener("load", () => setTimeout(() => {
+    const h = document.getElementById("header").getBoundingClientRect();
+    const rot = document.querySelector(".hero .rotulo").getBoundingClientRect();
+    const logos = [...document.querySelectorAll(".marca-assinatura, .marca-curta")];
+    const logo = logos.find(l => l.getBoundingClientRect().width > 0) || logos[0];
+    const lr = logo.getBoundingClientRect();
+    document.title = `PROBE8 headerAltura=${Math.round(h.height)} logoVisivel=${logo.className}:${Math.round(lr.width)}x${Math.round(lr.height)} topoDoRotulo=${Math.round(rot.top)} sobrepoe=${rot.top < h.bottom}`;
+  }, 700));
   if (qs.has("probe7")) addEventListener("load", () => setTimeout(() => {
     const a = document.querySelector(".marca-assinatura"), s = document.querySelector(".marca-simbolo");
     const ar = a.getBoundingClientRect(), sr = s.getBoundingClientRect();
@@ -56,6 +69,15 @@
      atualizada por rAF. O CSS scroll-driven, quando o navegador o aplica, apenas
      reforça o mesmo resultado. */
   const header = document.getElementById("header");
+
+  // a altura reservada para o cabeçalho fixo é medida, não chutada: o CSS traz um
+  // valor inicial e aqui ele passa a refletir a altura real (fonte, zoom, idioma).
+  const medirHeader = () => document.documentElement.style
+    .setProperty("--h-header", header.offsetHeight + "px");
+  medirHeader();
+  addEventListener("resize", medirHeader, { passive: true });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(medirHeader);
+
   const sentinela = document.createElement("div");
   sentinela.setAttribute("aria-hidden", "true");
   sentinela.style.cssText = "position:absolute;top:0;left:0;width:1px;height:60px;pointer-events:none";
