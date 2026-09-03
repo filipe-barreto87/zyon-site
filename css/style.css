@@ -164,7 +164,7 @@ section { position: relative; }
 .hero-h1 em { color: var(--ambar-2); }
 .hero-sub { color: var(--txt-claro-2); max-width: 34rem; }
 .hero-ctas { display: flex; gap: 0.9rem; flex-wrap: wrap; margin-top: 1.8rem; }
-.hero-selo-ipm {
+.hero-selo {
   margin-top: 2.2rem; font-family: var(--mono); font-size: 0.7rem;
   letter-spacing: 0.14em; text-transform: uppercase; color: var(--txt-claro-2);
   display: flex; align-items: center; gap: 0.7rem;
@@ -605,7 +605,7 @@ section { position: relative; }
   .hero-h1 { font-size: clamp(2rem, 1rem + 4.6vw, 5.6rem); margin: 0.9rem 0 0.8rem; }
   .hero-sub { font-size: 0.95rem; }
   .hero-ctas { margin-top: 1rem; }
-  .hero-selo-ipm { margin-top: 0.9rem; }
+  .hero-selo { margin-top: 0.9rem; }
   .doc { height: min(66vw, 30svh); width: auto; }
   .hero-hint { display: none; }
 }
