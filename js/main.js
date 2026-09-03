@@ -14,6 +14,12 @@
     scrollTo({ top: +qs.get("scroll"), behavior: "instant" }));
   if (qs.has("vh")) document.documentElement.style.setProperty("--vhpx", `${+qs.get("vh")}px`); // QA: svh fixo
   if (qs.has("shift")) document.body.style.marginTop = `-${+qs.get("shift")}px`; // QA headless: viewport deslocada
+  if (qs.has("probe5")) addEventListener("load", () => setTimeout(() => {
+    const r = document.querySelector(".hero-h1 .risca");
+    const h1 = document.querySelector(".hero-h1");
+    const cs = getComputedStyle(r, "::after");
+    document.title = `PROBE5 h1temIn=${h1.classList.contains("in")} larguraPalavra=${Math.round(r.getBoundingClientRect().width)} pseudoWidth=${cs.width} transform=${cs.transform}`;
+  }, +(qs.get("probe5") || 2500)));
   if (qs.has("probe4")) addEventListener("load", () => setTimeout(() => {
     const h = document.getElementById("header");
     const b = document.querySelector(".progresso");

@@ -160,34 +160,25 @@ section { position: relative; }
   gap: clamp(2rem, 5vw, 5rem); align-items: center;
   max-width: 1280px; margin: 0 auto; width: 100%;
 }
-.hero-h1 { font-size: clamp(2.3rem, 1.2rem + 4.2vw, 4.4rem); margin: 1.2rem 0 1.1rem; }
+.hero-h1 {
+  font-size: clamp(1.6rem, 1rem + 1.9vw, 2.6rem);   /* a 1ª linha é a menor: "arquivo morto" */
+  margin: 1.2rem 0 1.1rem; font-weight: 450;
+  color: var(--txt-claro-2); line-height: 1.12;
+}
+.hero-h1 .risca { position: relative; white-space: nowrap; }
+.hero-h1 .risca::after {                 /* o traço que encerra o arquivo morto */
+  content: ""; position: absolute; left: -3%; right: -3%; top: 54%;
+  height: 3px; background: var(--ambar); border-radius: 2px;
+}
+.hero-h1 em {                            /* e o que volta a viver domina o hero */
+  display: block; margin-top: 0.1em;
+  font-size: clamp(2.6rem, 1.3rem + 4.6vw, 5.2rem);
+  font-style: italic; font-weight: 560; line-height: 0.98;
+  color: var(--ambar-2); letter-spacing: -0.02em;
+}
 .hero-h1 em { color: var(--ambar-2); }
 .hero-sub { color: var(--txt-claro-2); max-width: 32rem; font-size: 0.97rem; }
 .hero-ctas { display: flex; gap: 0.9rem; flex-wrap: wrap; margin-top: 1.8rem; }
-/* slogan do hero — a frase encena o serviço: o arquivo "morto" é riscado
-   e o que renasce ganha a escala. Contraste de tamanho conta a história. */
-.hero-slogan {
-  margin-top: clamp(1.6rem, 3.2vh, 2.6rem);
-  font-family: var(--serif); font-optical-sizing: auto;
-  font-size: clamp(1.05rem, 0.85rem + 0.7vw, 1.35rem);
-  font-weight: 450; line-height: 1.15; letter-spacing: -0.01em;
-  color: var(--txt-claro-2);
-}
-.hero-slogan .risca { position: relative; white-space: nowrap; }
-.hero-slogan .risca::after {              /* o traço que encerra o arquivo morto */
-  content: ""; position: absolute; left: -3%; right: -3%; top: 54%;
-  height: 2px; background: var(--ambar); border-radius: 2px;
-  transform: scaleX(0); transform-origin: left center;
-  transition: transform 0.6s var(--ease-out) 0.4s;
-}
-.hero-slogan.in .risca::after { transform: scaleX(1); }
-.hero-slogan em {                          /* e o que volta a viver */
-  display: block; margin-top: 0.15em;
-  font-size: clamp(1.9rem, 1.1rem + 2.6vw, 3.1rem);
-  font-style: italic; font-weight: 560; line-height: 1;
-  color: var(--ambar-2);
-}
-.rm .hero-slogan .risca::after { transform: scaleX(1); transition: none; }
 .selo-traco { width: 1.6rem; height: 1px; background: var(--linha-d); flex: none; }
 
 /* o documento sendo digitalizado */
@@ -359,6 +350,12 @@ section { position: relative; }
   border: 1px solid var(--selo-tinta); border-radius: 50%; color: var(--selo-tinta);
 }
 .sol h3 { font-size: clamp(1.7rem, 3vw, 2.6rem); margin: 1.1rem 0 0.9rem; }
+.sol-rotulo {
+  font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--selo-tinta); margin-top: 1rem;
+}
+.sol-titulo-forte { margin-top: 0.5rem !important; max-width: 16ch; }
+.sol-titulo-forte em { color: var(--selo-tinta); font-style: italic; font-weight: 560; }
 .sol-txt > p { color: var(--txt-escuro-2); max-width: 36rem; }
 .sol-lista { list-style: none; margin-top: 1.4rem; }
 .sol-lista li {
@@ -624,7 +621,7 @@ section { position: relative; }
   .hero-h1 { font-size: clamp(2rem, 1rem + 4.6vw, 5.6rem); margin: 0.9rem 0 0.8rem; }
   .hero-sub { font-size: 0.95rem; }
   .hero-ctas { margin-top: 1rem; }
-  .hero-slogan { margin-top: 1.1rem; font-size: clamp(1.05rem, 0.9rem + 1.2vw, 1.35rem); gap: 0.7rem; }
+
   .doc { height: min(66vw, 30svh); width: auto; }
   .hero-hint { display: none; }
 }
