@@ -11,7 +11,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Crect width='96' height='96' rx='14' fill='%230D1321'/%3E%3Crect x='14' y='18' width='68' height='18' rx='2' fill='%23F5EEE1'/%3E%3Cpath d='M58 42 H82 L38 62 H14 Z' fill='%23E45D16'/%3E%3Crect x='14' y='68' width='68' height='18' rx='2' fill='%23F5EEE1'/%3E%3C/svg%3E">
 <link rel="preload" href="assets/fonts/fonts.css" as="style">
 <link rel="stylesheet" href="assets/fonts/fonts.css">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css?v=202609031831">
 </head>
 <body>
 
@@ -19,8 +19,15 @@
 
 <header class="topo" id="header">
   <a class="marca" href="#topo" aria-label="Zyon — Tecnologia em gestão documental">
-    <img class="marca-assinatura" src="assets/img/zyon-assinatura.svg" alt="Zyon — Tecnologia em gestão documental" width="475" height="96">
-    <img class="marca-curta" src="assets/img/zyon-assinatura-curta.svg" alt="Zyon" width="256" height="96">
+    <!-- desktop: a assinatura aprovada, com o descritor em curvas -->
+    <img class="marca-assinatura" src="assets/img/zyon-assinatura.svg" alt="" width="475" height="96">
+    <!-- mobile: as MESMAS curvas em três peças; só o descritor volta a ser tipo,
+         para ganhar corpo próprio em vez de encolher junto com o símbolo -->
+    <img class="marca-simbolo" src="assets/img/zyon-simbolo-mancha.svg" alt="" width="84" height="80">
+    <span class="marca-texto">
+      <img class="marca-nome" src="assets/img/zyon-nome.svg" alt="" width="130" height="46">
+      <span class="marca-descritor"><span>Tecnologia em</span><span>Gestão documental</span></span>
+    </span>
   </a>
   <nav class="nav" aria-label="Navegação principal">
     <a href="#sobre">Sobre</a>
@@ -29,7 +36,7 @@
     <a href="#ged">Sistema GED</a>
     <a href="#legislacao">Legislação</a>
   </nav>
-  <a class="cta cta-mini" href="https://wa.me/554934423503?text=Ol%C3%A1!%20Quero%20falar%20com%20um%20especialista." target="_blank" rel="noopener">Falar com especialista</a>
+  <a class="cta cta-mini" href="https://wa.me/554934423503?text=Ol%C3%A1!%20Quero%20falar%20com%20um%20especialista." target="_blank" rel="noopener" aria-label="Falar com um especialista pelo WhatsApp">Falar<span class="cta-longo">&nbsp;com especialista</span></a>
 </header>
 
 <!-- ATO 1 · SET PIECE: O SCANNER -->
@@ -37,7 +44,7 @@
   <div class="pin-screen hero-screen">
     <div class="hero-grid">
       <div class="hero-copy">
-        <p class="rotulo" data-reveal="stamp">Gestão documental · Concórdia — SC</p>
+        <p class="rotulo" data-reveal="stamp">Concórdia — SC</p>
         <h1 class="hero-h1" data-reveal>
           Seu arquivo <span class="risca">morto</span>,<br>
           <em>vivo de novo.</em>
@@ -384,6 +391,6 @@
   </footer>
 </section>
 
-<script src="js/main.js" defer></script>
+<script src="js/main.js?v=202609031831" defer></script>
 </body>
 </html>

@@ -674,3 +674,96 @@ section { position: relative; }
   .mq-trilho, .hint-seta, .selo-circular { animation: none !important; }
   [data-reveal] { opacity: 1 !important; transform: none !important; transition: none !important; animation: none !important; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CABEÇALHO MOBILE — lockup de 3 peças, descritor em texto vivo, 2 linhas
+
+   POSIÇÃO NO ARQUIVO É LOAD-BEARING: o @media (max-width: 960px) lá em cima
+   redeclara --h-header e .marca-curta com a MESMA especificidade. Empatou,
+   vence quem vem depois. Este bloco tem de ficar no FIM do arquivo.
+
+   Por que o descritor deixa de ser curva: num SVG único ele encolhe junto com
+   o símbolo, e foi isso que o reduziu a ~5,7px de versal no mobile. Como texto
+   ele ganha corpo próprio — 8,0px de versal, 41% maior que o do desktop.
+   O desenho não diverge: símbolo e "Zyon" continuam sendo as curvas aprovadas.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* as peças do lockup mobile não existem no desktop */
+.marca-simbolo, .marca-texto { display: none; }
+
+@media (max-width: 960px) {
+  :root {
+    --s:   clamp(26px, 7.5vw, 30px);      /* mancha do símbolo (84x80 u) */
+    --dfs: clamp(0.72rem, 3vw, 0.78rem);  /* corpo do descritor, em rem: acompanha
+                                             o zoom de fonte do sistema */
+    --dtr: 0.16em;                        /* tracking real medido na assinatura */
+    --desc: #C9D0DE;                      /* aço clareado — 6,9:1 sobre a placa */
+  }
+
+  /* min-height LITERAL: com var(--h-header) o JS escreve de volta o próprio
+     offsetHeight e a barra nunca consegue encolher abaixo da semente do CSS. */
+  .topo { min-height: 54px; padding: 5px var(--pad); gap: 14px; border-bottom: 0; }
+  .topo.rolou {
+    background: rgba(13, 19, 33, 0.80);
+    -webkit-backdrop-filter: blur(16px) saturate(1.3);
+            backdrop-filter: blur(16px) saturate(1.3);
+    border-color: transparent;
+  }
+  /* o fio claro de 1px riscava o papel; vira dissolução de 10px */
+  .topo::after {
+    content: ""; position: absolute; left: 0; right: 0; top: 100%;
+    height: 10px; opacity: 0; pointer-events: none;
+    background: linear-gradient(rgba(13, 19, 33, .8), rgba(13, 19, 33, 0));
+    transition: opacity 0.4s var(--ease-out);
+  }
+  .topo.rolou::after { opacity: 1; }
+
+  .nav { display: none; }
+
+  .marca-assinatura, .marca-curta { display: none; }
+  .marca {
+    display: flex; align-items: center;
+    column-gap: calc(var(--s) * 0.343);   /* mesmo vão da assinatura (27,4/80) */
+    margin-right: auto; min-width: 0; min-height: 44px;
+  }
+  .marca-simbolo { display: block; height: var(--s); width: auto; flex: none; }
+  .marca-texto { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
+  .marca-nome {
+    display: block; width: auto;
+    height: calc(var(--s) * 0.5753);      /* razão nome:símbolo da assinatura */
+    margin-bottom: 1px;
+  }
+  .marca-descritor {
+    font-family: var(--mono); font-weight: 500; font-size: var(--dfs);
+    line-height: 1.16; letter-spacing: var(--dtr); text-transform: uppercase;
+    color: var(--desc);
+    margin-right: calc(var(--dtr) * -1);  /* apara o tracking do último glifo */
+    overflow-wrap: anywhere;              /* sob zoom de fonte QUEBRA, não colide */
+  }
+  .marca-descritor > span { display: block; }
+
+  /* "Falar com especialista" (143px) só cabe ao lado do lockup de 186px a partir
+     de ~400px de largura; abaixo disso o rótulo trunca em "Falar" e o sentido
+     completo fica no aria-label. Nada de rótulo novo — só menos rótulo. */
+  .cta-longo { display: none; }
+  @media (min-width: 481px) { .cta-longo { display: inline; } }
+  .topo .cta-mini { position: relative; flex: none; }
+  .topo .cta-mini::after { content: ""; position: absolute; inset: -5px; }
+
+  html { scroll-padding-top: calc(var(--h-header) + 12px); }
+}
+
+/* o caminho scroll-driven (sem JS) precisa da placa nova: animação vence
+   declaração, então sem redefinir o NOME o keyframe antigo devolveria .88/12 */
+@supports (animation-timeline: scroll()) {
+  @media (max-width: 960px) {
+    @keyframes topo-fundo-mob {
+      to {
+        background: rgba(13, 19, 33, 0.8);
+        border-color: transparent;
+        backdrop-filter: blur(16px) saturate(1.3);
+      }
+    }
+    .topo { animation-name: topo-fundo-mob; }
+  }
+}

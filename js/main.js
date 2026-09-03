@@ -14,6 +14,16 @@
     scrollTo({ top: +qs.get("scroll"), behavior: "instant" }));
   if (qs.has("vh")) document.documentElement.style.setProperty("--vhpx", `${+qs.get("vh")}px`); // QA: svh fixo
   if (qs.has("shift")) document.body.style.marginTop = `-${+qs.get("shift")}px`; // QA headless: viewport deslocada
+  if (qs.has("probeZ")) addEventListener("load", () => setTimeout(async () => {
+    // QA: --h-header tem de acompanhar o header quando só o corpo de fonte muda
+    const h = document.getElementById("header"), raiz = document.documentElement;
+    const ler = () => getComputedStyle(raiz).getPropertyValue("--h-header").trim();
+    const passo = async (px) => { raiz.style.fontSize = px; await new Promise(r => setTimeout(r, 1200));
+      return `${px}:real=${h.offsetHeight},var=${ler()}`; };
+    const r = [await passo("16px"), await passo("20px"), await passo("24px")];
+    raiz.style.fontSize = "";
+    document.title = "PROBEZ " + r.join(" | ");
+  }, 700));
   if (qs.has("probe9")) addEventListener("load", () => setTimeout(() => {
     const sc = document.querySelector(".hero-screen"), gr = document.querySelector(".hero-grid");
     const cs = getComputedStyle(sc);
@@ -72,9 +82,19 @@
 
   // a altura reservada para o cabeçalho fixo é medida, não chutada: o CSS traz um
   // valor inicial e aqui ele passa a refletir a altura real (fonte, zoom, idioma).
-  const medirHeader = () => document.documentElement.style
-    .setProperty("--h-header", header.offsetHeight + "px");
+  let ultimaAltura = -1;
+  const medirHeader = () => {
+    const alt = header.offsetHeight;
+    if (alt === ultimaAltura) return;          // sem escrita à toa
+    ultimaAltura = alt;
+    document.documentElement.style.setProperty("--h-header", alt + "px");
+  };
   medirHeader();
+  // "resize" não dispara quando só o corpo de fonte do usuário muda — e aí
+  // --h-header ficava velha e o cabeçalho voltava a cobrir o início do herói.
+  // O ResizeObserver pega qualquer mudança de caixa; a
+  // guarda de "mesma altura" evita reescrever a variável a cada notificação.
+  if (window.ResizeObserver) new ResizeObserver(medirHeader).observe(header);
   addEventListener("resize", medirHeader, { passive: true });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(medirHeader);
 
