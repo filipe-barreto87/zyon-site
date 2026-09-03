@@ -1,0 +1,4 @@
+# HOMOLOGAÇÃO — não indexar.
+# AO PROMOVER PARA PRODUÇÃO: substituir por "User-agent: *\nAllow: /" + Sitemap.
+User-agent: *
+Disallow: /
