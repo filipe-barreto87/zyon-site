@@ -107,7 +107,7 @@ section { position: relative; }
 }
 .marca { text-decoration: none; display: flex; align-items: center; }
 .marca-assinatura { height: 40px; width: auto; display: block; }   /* assinatura completa em curvas */
-.marca-simbolo { height: 32px; width: auto; display: none; }        /* só o símbolo, no mobile */
+.marca-curta { height: 34px; width: auto; display: none; }          /* símbolo + nome, no mobile */
 .nav { display: flex; gap: 1.6rem; margin-left: auto; }
 .nav a {
   text-decoration: none; font-size: 0.85rem; color: var(--txt-claro-2);
@@ -607,9 +607,9 @@ section { position: relative; }
    ============================================================ */
 @media (max-width: 960px) {
   .nav { display: none; }
-  /* manual: sem espaço para a assinatura completa, fica só o símbolo */
+  /* sem espaço para o descritor, mas o NOME da marca permanece */
   .marca-assinatura { display: none; }
-  .marca-simbolo { display: block; height: 30px; }
+  .marca-curta { display: block; height: 32px; }
   .hero-grid { grid-template-columns: 1fr; gap: 1.25rem; }
   .hero-stage { order: 2; }
   .hero-screen { padding: 4.5rem var(--pad) 1.5rem; }
