@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 84 80">
+<!-- Símbolo da Zyon recortado na mancha (x6..90, y8..88 do grid 96), na versão
+     SIMPLIFICADA, sem os furos do puxador: o manual manda usar assim abaixo de
+     20px de altura, e em 16px os furos viram ruído.
+     A cor das caixas acompanha o tema do sistema operacional; a diagonal âmbar
+     permanece nas duas versões, como manda o capítulo 02 do manual. -->
+<style>
+  .caixa { fill: #0D1321 }
+  @media (prefers-color-scheme: dark) { .caixa { fill: #F5EEE1 } }
+</style>
+<rect class="caixa" width="84" height="24" rx="2"/>
+<path d="M56 28 H84 L28 52 H0 Z" fill="#E45D16"/>
+<rect class="caixa" y="56" width="84" height="24" rx="2"/>
+</svg>
