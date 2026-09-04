@@ -1,103 +1,73 @@
-# Zyon Tecnologia — site estático. Servidor Apache da hospedagem atual.
+# Zyon Tecnologia — site estático. Servidor: LiteSpeed (honra .htaccess Apache).
+#
+# TUDO aqui é mod_rewrite de propósito. Este servidor ignora as diretivas de
+# mod_alias (Redirect/RedirectMatch) e aborta o resto do arquivo ao encontrá-las:
+# na primeira publicação, os 301 das URLs antigas e o ErrorDocument nunca
+# dispararam porque vinham depois de um RedirectMatch. Não reintroduzir.
 
-# ---------- canonicalização: sempre HTTPS, sempre sem www ----------
+ErrorDocument 404 /404.html
+
 RewriteEngine On
 
-# A validação de certificado (Let's Encrypt/AutoSSL) tem de passar SEMPRE, inclusive
-# em http. Sem esta saída, a renovação falha e o HTTPS do domínio expira.
+# A validação de certificado (AutoSSL) tem de passar sempre, inclusive em http.
 RewriteRule ^\.well-known/ - [L]
 
-# ESCOPO POR HOST — obrigatório. O e-mail vive no MESMO servidor e no mesmo IP:
-# mail. / webmail. / cpanel. compartilham este docroot em cPanel. Uma regra sem
-# RewriteCond de Host reescreveria "http://webmail.zyontecnologia.com.br/…" para
-# "https://zyontecnologia.com.br/…" e sequestraria o acesso ao webmail.
-# Só o domínio raiz e o www são canonicalizados; qualquer outro host passa intacto.
-
-# http -> https (apenas apex e www)
-# Em hospedagem compartilhada o TLS termina num proxy e %{HTTPS} chega vazio; testar
-# só ele faria a regra redirigir para si mesma em loop e derrubar o domínio.
+# ---------- canonicalização ----------
+# ESCOPO POR HOST é obrigatório: o e-mail vive no MESMO servidor e IP, e em
+# cPanel mail./webmail./cpanel. compartilham este docroot. Sem o RewriteCond de
+# Host, "http://webmail.zyontecnologia.com.br/" seria sequestrado para o site.
+# E o TLS termina num proxy, então %{HTTPS} chega vazio: testar só ele faria a
+# regra redirigir para si mesma em loop.
 RewriteCond %{HTTP_HOST} ^(www\.)?zyontecnologia\.com\.br$ [NC]
 RewriteCond %{HTTPS} !=on
 RewriteCond %{HTTP:X-Forwarded-Proto} !=https
 RewriteCond %{HTTP:X-Forwarded-SSL} !=on
 RewriteRule ^(.*)$ https://zyontecnologia.com.br/$1 [R=301,L]
 
-# www -> apex
 RewriteCond %{HTTP_HOST} ^www\.zyontecnologia\.com\.br$ [NC]
 RewriteRule ^(.*)$ https://zyontecnologia.com.br/$1 [R=301,L]
+
+# ---------- URLs do site WordPress anterior ----------
+# O slug deste post trazia um emoji (…-%f0%9f%9a%80). O padrão casa qualquer
+# sufixo depois do slug limpo, então não depende de como o servidor decodifica.
+RewriteRule ^evolucao-e-inovacao-nossa-jornada-rumo-a-gestao-documental-.+$ /evolucao-e-inovacao-nossa-jornada-rumo-a-gestao-documental/ [R=301,L]
+
+# páginas padrão do WordPress que nunca foram conteúdo
+RewriteRule ^hello-world/?$ / [R=301,L]
+RewriteRule ^sample-page/?$ / [R=301,L]
+
+# a antiga política de cookies virou a política de privacidade
+RewriteRule ^politica-de-cookies/?$ /politica-de-privacidade.html [R=301,L]
+
+# arquivos gerados pelo WordPress que respondiam 200 e sumiriam sem aviso
+RewriteRule ^(category|categoria|tag|author)(/.*)?$ /artigos/ [R=301,L]
+RewriteRule ^[0-9]{4}(/[0-9]{2})?(/[0-9]{2})?/?$ /artigos/ [R=301,L]
+RewriteRule ^(feed|comments/feed)/?$ /artigos/ [R=301,L]
+RewriteRule ^wp-sitemap.*\.xml$ /sitemap.xml [R=301,L]
+
+# restos do WordPress: não deixar 404 nem sinalizar que existiu um WP aqui
+RewriteRule ^(wp-admin|wp-login\.php|xmlrpc\.php|wp-json)(/.*)?$ / [R=301,L]
+RewriteRule ^wp-(content|includes)/ - [R=404,L]
 
 # /politica-de-privacidade (sem extensão) serve o arquivo .html
 RewriteRule ^politica-de-privacidade/?$ /politica-de-privacidade.html [L]
 
-# ---------- URLs do site WordPress anterior ----------
-# O slug do post trazia um emoji (…-%f0%9f%9a%80). O padrão abaixo casa qualquer
-# sufixo depois do slug limpo, então não depende de como o Apache decodifica o %XX.
-RedirectMatch 301 "^/evolucao-e-inovacao-nossa-jornada-rumo-a-gestao-documental-.+$" "/evolucao-e-inovacao-nossa-jornada-rumo-a-gestao-documental/"
+# ---------- o que este host NÃO deixa o .htaccess controlar ----------
+# Testado em produção, não suposto: neste LiteSpeed as diretivas Header,
+# ExpiresByType e AddOutputFilterByType são aceitas sem erro e simplesmente
+# ignoradas — o servidor aplica a própria política. Medido depois do corte:
+#   gzip ................. ligado pelo servidor (content-encoding: gzip)
+#   estáticos ............ Cache-Control: public, max-age=604800 (7 dias)
+#   HTML e JS ............ sem Cache-Control
+#   X-Frame-Options, X-Content-Type-Options, Referrer-Policy ... não emitidos
+# Deixar as diretivas aqui daria a impressão falsa de que estão valendo, então
+# foram removidas. Para ativá-las de fato é preciso o painel da hospedagem
+# (cPanel) ou pedir à revenda — não dá para fazer por FTP.
+# CSS e JS carregam ?v= na URL, então os 7 dias do servidor não impedem que uma
+# publicação nova chegue ao visitante.
 
-# páginas padrão do WordPress que nunca foram conteúdo
-RedirectMatch 301 "^/hello-world/?$"  "/"
-RedirectMatch 301 "^/sample-page/?$"  "/"
-
-# a antiga política de cookies virou a política de privacidade
-RedirectMatch 301 "^/politica-de-cookies/?$" "/politica-de-privacidade.html"
-
-# arquivos gerados pelo WordPress que respondem 200 hoje e sumiriam sem aviso:
-# categorias, tags, autor, arquivos por data, feeds e o sitemap antigo.
-RedirectMatch 301 "^/(category|categoria|tag|author)(/.*)?$"  "/artigos/"
-RedirectMatch 301 "^/[0-9]{4}(/[0-9]{2})?(/[0-9]{2})?/?$"     "/artigos/"
-RedirectMatch 301 "^/(feed|comments/feed)/?$"                 "/artigos/"
-RedirectMatch 301 "^/wp-sitemap.*\.xml$"                      "/sitemap.xml"
-
-# restos do WordPress: não deixar 404 nem expor que existiu um WP aqui
-RedirectMatch 301 "^/(wp-admin|wp-login\.php|xmlrpc\.php|wp-json)(/.*)?$" "/"
-RedirectMatch 404 "^/wp-(content|includes)/.*$"
-
-ErrorDocument 404 /404.html
-
-# ---------- compressão ----------
-<IfModule mod_deflate.c>
-  AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml
-  AddOutputFilterByType DEFLATE application/javascript application/json image/svg+xml
-</IfModule>
-
-# ---------- cache ----------
-<IfModule mod_expires.c>
-  ExpiresActive On
-  # HTML muda a cada publicação: revalidar sempre
-  ExpiresByType text/html "access plus 0 seconds"
-  # CSS/JS carregam ?v= na URL, então podem durar
-  ExpiresByType text/css                "access plus 1 year"
-  ExpiresByType application/javascript  "access plus 1 year"
-  ExpiresByType font/woff2              "access plus 1 year"
-  ExpiresByType image/jpeg              "access plus 6 months"
-  ExpiresByType image/webp              "access plus 6 months"
-  ExpiresByType image/svg+xml           "access plus 6 months"
-</IfModule>
-<IfModule mod_headers.c>
-  # 1 ano só para o que tem impressão digital na URL: os woff2 têm hash no nome e
-  # css/js são pedidos com ?v=. Imagem e SVG NÃO têm versão, então 1 ano prenderia
-  # um logo trocado no cache do visitante por um ano inteiro.
-  <FilesMatch "\.(woff2|css|js)$">
-    Header set Cache-Control "public, max-age=31536000"
-  </FilesMatch>
-  <FilesMatch "\.(svg|jpe?g|webp|png|avif)$">
-    Header set Cache-Control "public, max-age=604800"
-  </FilesMatch>
-  <FilesMatch "\.html$">
-    Header set Cache-Control "public, max-age=0, must-revalidate"
-  </FilesMatch>
-  Header always set X-Content-Type-Options "nosniff"
-  Header always set Referrer-Policy "strict-origin-when-cross-origin"
-  Header always set X-Frame-Options "SAMEORIGIN"
-</IfModule>
-
-<IfModule mod_mime.c>
-  AddType font/woff2 .woff2
-  AddType image/webp .webp
-</IfModule>
+# AddType é honrado (verificado: o woff2 sai como font/woff2).
+AddType font/woff2 .woff2
+AddType image/webp .webp
 
 DirectoryIndex index.html
-# "Options -Indexes" foi removido de propósito: o 500 que ele pode causar vem do
-# AllowOverride do vhost, e <IfModule> NÃO protege contra isso (o módulo existe; o
-# que falta é permissão). Como todo diretório publicado tem index.html, a listagem
-# nunca aparece — a diretiva não fazia falta e só adicionava risco de derrubar o site.
