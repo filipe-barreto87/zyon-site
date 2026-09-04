@@ -33,8 +33,11 @@
 .doc-corpo p, .doc-corpo li { color: var(--txt-claro-2); }
 .doc-corpo p + p { margin-top: 0.9rem; }
 .doc-corpo strong { color: var(--txt-claro); font-weight: 620; }
-.doc-corpo a { color: var(--ambar-2); text-decoration: underline; text-underline-offset: 3px; }
-.doc-corpo a:hover { color: var(--ambar); }
+/* :not(.cta) é load-bearing: sem isso a regra pinta o botão de âmbar-2 SOBRE o
+   fundo âmbar e ainda o sublinha — o texto some dentro do próprio botão. */
+.doc-corpo a:not(.cta) { color: var(--ambar-2); text-decoration: underline; text-underline-offset: 3px; }
+.doc-corpo a:not(.cta):hover { color: var(--ambar); }
+.doc-corpo .cta { color: #fff; text-decoration: none; }
 .doc-corpo ul, .doc-corpo ol { margin: 0.8rem 0 0.8rem 1.2rem; display: grid; gap: 0.5rem; }
 .doc-corpo li::marker { color: var(--ambar); }
 

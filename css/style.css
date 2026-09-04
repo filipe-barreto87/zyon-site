@@ -113,22 +113,37 @@ section { position: relative; }
 }
 /* âncoras não pousam atrás do cabeçalho fixo — vale em todos os tamanhos */
 html { scroll-padding-top: calc(var(--h-header) + 12px); }
-.marca { text-decoration: none; display: flex; align-items: center; }
-.marca-assinatura { height: 52px; width: auto; display: block; }   /* assinatura completa em curvas */
+/* flex:none é obrigatório: com 6 links no menu o flex espremia a <img> na
+   horizontal mantendo a altura, quebrando a proporção da marca — o manual
+   manda escalar sempre proporcionalmente, nunca comprimir. */
+.marca { text-decoration: none; display: flex; align-items: center; flex: none; }
+.marca-assinatura { height: 52px; width: auto; display: block; flex: none; }   /* assinatura completa em curvas */
 .marca-curta { height: 34px; width: auto; display: none; }          /* símbolo + nome, no mobile */
 .nav { display: flex; gap: clamp(0.9rem, 1.6vw, 1.6rem); margin-left: auto; }
 .nav a {
-  text-decoration: none; font-size: 0.85rem; color: var(--txt-claro-2);
+  text-decoration: none; font-size: 0.85rem; font-weight: 500;
+  color: var(--txt-claro);        /* era o aço #A6AFC4: em 0.85rem/400 sobre navy
+                                     o texto ficava fino e apagado */
   white-space: nowrap;            /* sem "Guarda / física" em duas linhas */
+  position: relative; padding-bottom: 3px;
   transition: color 0.25s;
 }
+/* afordância: um filete âmbar que cresce a partir da esquerda */
+.nav a::after {
+  content: ""; position: absolute; left: 0; bottom: 0; height: 1.5px; width: 100%;
+  background: var(--ambar); transform: scaleX(0); transform-origin: left;
+  transition: transform 0.28s var(--ease-out);
+}
 .nav a:hover { color: var(--ambar-2); }
+.nav a:hover::after { transform: scaleX(1); }
+.nav a:focus-visible { outline: 2px solid var(--ambar-2); outline-offset: 3px; border-radius: 1px; }
 
 /* Faixa apertada: logo grande + 5 links + CTA no mesmo eixo, sem quebrar em 2 linhas */
-@media (min-width: 961px) and (max-width: 1080px) {
-  .marca-assinatura { height: 46px; }
-  .nav { gap: 0.9rem; }
-  .nav a { font-size: 0.8rem; }
+@media (min-width: 961px) and (max-width: 1180px) {
+  .marca-assinatura { height: 44px; }
+  .nav { gap: 0.75rem; }
+  .nav a { font-size: 0.78rem; }
+  .topo { gap: 1.1rem; }
   .topo .cta { padding: 0.7rem 1.1rem; font-size: 0.85rem; white-space: nowrap; }
 }
 
